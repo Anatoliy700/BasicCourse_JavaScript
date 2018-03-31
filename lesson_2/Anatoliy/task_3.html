@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 2 Задача 1</title>
+  <script>
+    'use strict';
+
+    let a = parseInt(prompt("Введите число 'a'"));
+    let b = parseInt(prompt("Введите число 'b'"));
+
+    // проверяем "a" и "b" положительные
+    if (a >= 0 && b >= 0) {
+
+      // проверяем "a" больше "b"
+      if (a > b) {
+        let result = a - b;
+        alert(`"a" больше "b" на ${result}`)
+
+        // проверяем "a" меньше "b"
+      } else if (b > a) {
+        let result = b - a;
+        alert(`"b" больше "a" на ${result}`)
+
+        // проверяем "a" и "b" равны
+      } else {
+        alert('"a" и "b" равны')
+      }
+
+      // проверяем "a" и "b" отрицательные
+    } else if (a < 0 && b < 0) {
+      let result = a * b;
+      alert(`Произведение "a" и "b" равно ${result}`)
+
+      // проверяем "a" и "b" разных знаков
+    } else {
+      let result = a + b;
+      alert(`Сумма "a" и "b" равна ${result}`)
+    }
+  </script>
+</head>
+<body>
+
+</body>
+</html>
