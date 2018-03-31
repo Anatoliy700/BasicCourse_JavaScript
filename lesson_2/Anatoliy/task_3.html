@@ -11,31 +11,31 @@
 
     // проверяем "a" и "b" положительные
     if (a >= 0 && b >= 0) {
+      let result = a - b;
 
-      // проверяем "a" больше "b"
-      if (a > b) {
-        let result = a - b;
-        alert(`"a" больше "b" на ${result}`)
+      // проверяем "a" меньше "b"
+      if (result < 0) {
+        result = -result;
+        alert(`"b" больше "a" на ${result}`);
 
-        // проверяем "a" меньше "b"
-      } else if (b > a) {
-        let result = b - a;
-        alert(`"b" больше "a" на ${result}`)
+        // проверяем "a" больше "b"
+      } else if (result > 0) {
+        alert(`"a" больше "b" на ${result}`);
 
         // если "a" и "b" равны
       } else {
-        alert('"a" и "b" равны')
+        alert('"a" и "b" равны');
       }
 
       // проверяем "a" и "b" отрицательные
     } else if (a < 0 && b < 0) {
       let result = a * b;
-      alert(`Произведение "a" и "b" равно ${result}`)
+      alert(`Произведение "a" и "b" равно ${result}`);
 
       // проверяем "a" и "b" разных знаков
     } else {
       let result = a + b;
-      alert(`Сумма "a" и "b" равна ${result}`)
+      alert(`Сумма "a" и "b" равна ${result}`);
     }
   </script>
 </head>
