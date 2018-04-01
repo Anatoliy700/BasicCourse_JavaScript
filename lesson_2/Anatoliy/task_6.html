@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 2 Задача 6</title>
+  <script>
+    'use strict';
+
+    /**
+     * Функция находит сумму 2-х аргументов и возвращает результат
+     * @param {int} a - Первое число
+     * @param {int} b - Второе число
+     * @return {int} Результат сложения
+     */
+    function sumArg(a, b) {
+      return a + b;
+    }
+
+    /**
+     * Функция находит разность 2-х аргументов и возвращает результат
+     * @param {int} a - Первое число
+     * @param {int} b - Второе число
+     * @return {int} Результат вычитания
+     */
+    function subtractArg(a, b) {
+      return a - b;
+    }
+
+    /**
+     * Функция находит частное 2-х аргументов и возвращает результат
+     * @param {int} a - Первое число
+     * @param {int} b - Второе число
+     * @return {int} Результат деления
+     */
+    function divideArg(a, b) {
+      return a / b;
+    }
+
+    /**
+     * Функция находит произведение 2-х аргументов и возвращает результат
+     * @param {int} a - Первое число
+     * @param {int} b - Второе число
+     * @return {int} Результат умножения
+     */
+    function multiplyArg(a, b) {
+      return a * b;
+    }
+
+    /**
+     * Функция производит математическую операцию и возвращает результат
+     * @param {int} arg1 - Первое число
+     * @param {int} arg2 - Второе число
+     * @param {string} operation - Имя производимой операции(sumArg, subtractArg, divideArg, multiplyArg)
+     * @return {int} Результат операции
+     */
+    function mathematicsOperation(arg1, arg2, operation) {
+
+      // Определяем выбранную пльзователем операцию
+      switch (operation) {
+        case 'sumArg':
+          return sumArg(arg1, arg2);
+
+        case 'subtractArg':
+          return subtractArg(arg1, arg2);
+
+        case 'divideArg':
+          return divideArg(arg1, arg2);
+
+        case 'multiplyArg':
+          return multiplyArg(arg1, arg2);
+
+        default:
+          return "Не верное имя операции";
+      }
+    }
+
+    console.log(mathematicsOperation(9, 3, 'sumArg'));
+    console.log(mathematicsOperation(9, 3, 'subtractArg'));
+    console.log(mathematicsOperation(9, 3, 'divideArg'));
+    console.log(mathematicsOperation(9, 3, 'multiplyArg'));
+    // console.log(mathematicsOperation(9, 3, 'sfsfsdf'));
+  </script>
+</head>
+<body>
+
+</body>
+</html>
