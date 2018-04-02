@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 2 Задача 8</title>
+</head>
+<body>
+<script>
+  'use strict';
+
+  /**
+   * Функция возводит число в степень и возвращает
+   * @param {number} val - Основание (число возводимое в степень)
+   * @param {number} pow - Показатель (число определяющее степень)
+   * @returns {number} - Результат возведения в степень
+   */
+  function power(val, pow) {
+    if (pow === 1) {
+      return val;
+    }
+    return power(val, pow - 1) * val;
+  }
+
+  alert(power(7, 7));
+</script>
+
+</body>
+</html>
