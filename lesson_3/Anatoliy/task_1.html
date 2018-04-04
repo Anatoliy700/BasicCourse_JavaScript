@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 3 Задача 1</title>
+</head>
+<body>
+<script>
+  'use strict';
+
+  /**
+   * Функция проверяет, является ли число простым.
+   * @param {number} number Число, которое проверяем.
+   * @returns {boolean} Результат проверки, является(true) или не является(false).
+   */
+  function isPrimeNumber(number) {
+    for (let k = 2; k < number; k++) {
+      if (number % k === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Переменная, в которой будет содержаться проверяемое число на простое или нет
+  let i = 0;
+
+  // Цикл переберает числа до 100
+  while (i < 100) {
+
+    // Вызываем функцию проверки числа, простое оно или нет, если функция возвращает что число простое,
+    // то выводим его в консоль
+    if (isPrimeNumber(i)) {
+      console.log(i);
+    }
+
+    // При каждой итерации прибавляем 1
+    i++
+  }
+</script>
+</body>
+</html>
