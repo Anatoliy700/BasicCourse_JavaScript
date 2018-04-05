@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 3 Задача 4</title>
+</head>
+<body>
+<script>
+  'use strict';
+
+  /**
+   *
+   * @param min
+   * @param max
+   * @returns {*}
+   */
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  /**
+   *
+   * @param arr
+   * @returns {Array}
+   */
+  function getUniqueValues(arr) {
+    let tempUniqueValues = [];
+
+    for (let i = 0; i < arr.length; i++) {
+
+      let tempArrayIndex = [];
+      let tempIndex = arr.indexOf(arr[i]);
+
+      while (tempIndex !== -1) {
+        tempArrayIndex.push(tempIndex);
+        tempIndex = arr.indexOf(arr[i], tempIndex + 1);
+      }
+      if (tempArrayIndex.length === 1) {
+        tempUniqueValues.push(arr[i]);
+      }
+    }
+    return tempUniqueValues;
+  }
+
+
+  // 1
+  let arrRandom = [];
+  for (let i = 0; i < 10; i++) {
+    arrRandom[i] = getRandomInt(-10, 11);
+  }
+
+  // 2
+  console.log(arrRandom);
+
+  //3
+
+
+  console.log(getUniqueValues(arrRandom));
+  // console.log(getRandomInt(-10,10));
+</script>
+</body>
+</html>
