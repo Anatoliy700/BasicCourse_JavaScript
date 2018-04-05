@@ -8,55 +8,149 @@
 <script>
   'use strict';
 
+  /** Пункт 1.1 **/
+
   /**
-   *
-   * @param min
-   * @param max
-   * @returns {*}
+   * Функция отдает случайное число в заданном диапазоне
+   * @param {number} min Минимальное число диапазона
+   * @param {number} max Максимальное число диапазона
+   * @returns {number} Возвращаемое случайно число
    */
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
+
+  /** Пункт 3 **/
+
   /**
-   *
-   * @param arr
-   * @returns {Array}
+   * Функция возвращает массив с уникальными значениями, выбранными из переданного массива
+   * @param {Array} arr Массив, в котором производится выборка
+   * @returns {Array} Массив с уникальными значениями
    */
   function getUniqueValues(arr) {
+
+    // Массив, в который будут складываться уникальные значения
     let tempUniqueValues = [];
 
+    // Цикл, для  прохода по всем значениям массива
     for (let i = 0; i < arr.length; i++) {
 
+      // Массив для индексов если значения повторяются
       let tempArrayIndex = [];
+
+      // Получаем индекс проверяемого значения
       let tempIndex = arr.indexOf(arr[i]);
 
+      // Идем по циклу для поиска повторения проверяемого значения
       while (tempIndex !== -1) {
+
+        // Складываем в массив индексы, под которыми находится в массиве проверяемое значение
         tempArrayIndex.push(tempIndex);
+
+        // Поиск следующего индекса проверяемого значения
         tempIndex = arr.indexOf(arr[i], tempIndex + 1);
       }
+
+      // Если в массиве только одно проверяемое значение, то добавляем его в массив уникальных значений
       if (tempArrayIndex.length === 1) {
         tempUniqueValues.push(arr[i]);
       }
     }
+
+    // Возвращаем массив с уникальными значениями
     return tempUniqueValues;
   }
 
 
-  // 1
+  /** Пункт 8 **/
+
+  /**
+   * Функция определяет порядок сортировки для метода "sort"
+   * @param {number} a Первое сравневаемое значение
+   * @param {number} b Второе сравневаемое значение
+   * @returns {number} Результат сравнения
+   */
+  function valuesSort(a, b) {
+
+    // Определяем что "0" будет всегда первым
+    if (a === 0) {
+      return -1;
+    } else if (b === 0) {
+      return 1;
+
+      // Определяем что если сравниваемые значения отрицательные, то они идут в порядке убывания
+    } else if (a < 0 && b < 0) {
+      if (a > b) {
+        return -1;
+      } else {
+        return 1
+      }
+
+      // Определяем что если сравниваемые значения положительные, то они идут в порядке возрастания
+    } else {
+      if (a < b) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+  }
+
+  /** Пункт 1.2 **/
+
+    // Объявляем массив
   let arrRandom = [];
+
+  // Наполняем массив случайными значениями из диапазона
   for (let i = 0; i < 10; i++) {
     arrRandom[i] = getRandomInt(-10, 11);
   }
 
-  // 2
+  /** Пункт 2 **/
+
+  // Выводим массив случайных значений
   console.log(arrRandom);
 
-  //3
+  /** Пункт 4 **/
 
+    // Получаем массив уникальных значений из массива случайных значений
+  let uniqueValuesArray = getUniqueValues(arrRandom);
 
-  console.log(getUniqueValues(arrRandom));
-  // console.log(getRandomInt(-10,10));
+  /** Пункт 5 **/
+
+  // Выводим массив уникальных значений
+  console.log(uniqueValuesArray);
+
+  /** Пункт 6 **/
+
+  // Повторяем цикл пока массив уникальных значений не будет содержать 10 элементов
+  while (uniqueValuesArray.length < 10) {
+
+    // Создаем новое случайное значение в диапазоне
+    const tempRandomNumber = getRandomInt(-10, 11);
+
+    // Проверяем сущесвует ли уже новое случайное значение в массиве с уникальными значениями
+    const resFind = uniqueValuesArray.findIndex(function (num) {
+      return tempRandomNumber === num;
+    });
+
+    // Если значение не существует, то добавляем его в начало массива с уникальными значениями
+    if (resFind === -1) {
+      uniqueValuesArray.unshift(tempRandomNumber);
+    }
+  }
+
+  /** Пункт 7 **/
+
+  // Снова выводим массив с уникальными значениями
+  console.log(uniqueValuesArray);
+
+  /** Пункт 9 **/
+
+  // Сортируем массив с уникальными значениями по алгоритму, описанному в функции "valuesSort" и выодим его снова
+  console.log(uniqueValuesArray.sort(valuesSort));
+
 </script>
 </body>
 </html>
