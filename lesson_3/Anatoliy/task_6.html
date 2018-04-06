@@ -62,6 +62,24 @@
     return tempUniqueValues;
   }
 
+  function getUniqueValues_2(arr) {
+
+    // Массив, в который будут складываться уникальные значения
+    let tempUniqueValues = [];
+
+    // Цикл, для  прохода по всем значениям массива
+    for (let i = 0; i < arr.length; i++) {
+
+      // Проверка на повторяющееся значение, если не повторяется то добавляем его в массив уникальных значений
+      if (tempUniqueValues.indexOf(arr[i]) === -1) {
+        tempUniqueValues.push(arr[i]);
+      }
+    }
+
+    // Возвращаем массив с уникальными значениями
+    return tempUniqueValues;
+  }
+
 
   /** Пункт 8 **/
 
@@ -115,7 +133,7 @@
   /** Пункт 4 **/
 
     // Получаем массив уникальных значений из массива случайных значений
-  let uniqueValuesArray = getUniqueValues(arrRandom);
+  let uniqueValuesArray = getUniqueValues_2(arrRandom);
 
   /** Пункт 5 **/
 
