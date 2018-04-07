@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 4 Задача 1</title>
+</head>
+<body>
+<script>
+  'use strict';
+
+  /**
+   * Функция проверяет переданное значение на целое число в диапазоне [0 - 999] и преобразует его в объект,
+   * раскладывая разряды данного чсисла в соответсвующие свойства созданного объекта.
+   * @param {*} num Перереданные данные в функцию(предположительно число).
+   * @returns {object} Объект образованный из переданного числа, в случае если было передано целое число в диапазоне
+   * [0 - 999]? иначе вернет пуситой объект.
+   */
+  function getDigitsOfNumber(num) {
+
+    // Преобразуем переданные данные в число
+    let inData = Number.parseFloat(num);
+
+    // Проверяем является ли это число целым в заданном диапазоне
+    if (Number.isNaN(inData) || !Number.isInteger(inData) || inData < 0 || inData >= 999) {
+
+      // Выводим сообщение об ошибке если не соответсвует любому из заданных критериев
+      console.log('Значение должно быть целым числом в интервале [0-999]');
+      return {};
+
+      // Если соответсвует, переходим суда
+    } else {
+
+      // Преобразуем число в массив
+      let arr = inData.toString().split('');
+
+      // Определяем объект
+      let outObject = {
+        firstDigit: null,
+        secondDigit: null,
+        thirdDigit: null,
+      };
+
+      // Раскладываем числа по свойствам, если разрядов меньше необходимого. дополняем нулями
+      outObject.firstDigit = arr.length - 1 >= 0 ? Number.parseInt(arr[arr.length - 1]) : 0;
+      outObject.secondDigit = arr.length - 2 >= 0 ? Number.parseInt(arr[arr.length - 2]) : 0;
+      outObject.thirdDigit = arr.length - 3 >= 0 ? Number.parseInt(arr[arr.length - 3]) : 0;
+
+      // Возвращаем объект
+      return outObject;
+    }
+  }
+
+  // Просим пользователя ввести число
+  let userData = prompt('Введите число от 0 до 999 или нажмите "отмена" для остановки');
+
+  // Вызываем функцию и выводим результат в консоль
+  console.clear();
+  console.log(getDigitsOfNumber(userData));
+
+</script>
+</body>
+</html>
