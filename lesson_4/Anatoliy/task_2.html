@@ -39,11 +39,19 @@
       this.y = startY;
     },
 
+    // todo: Модеризированный метод по заданию
+
     /**
-     * Двигает игрока по переданному направлению.
-     * @param {int} direction Направление, в котором будет движение.
+     * Передвигает игрока на переданную позицию.
+     * @param {{x: int, y: int}} nextPosition Новая позиция игрока.
      */
-    move(direction) {
+    move(nextPosition) {
+
+      this.x = nextPosition.x;
+      this.y = nextPosition.y;
+/*
+       //todo: Модернизация старого метода по пункту 1 задания
+
       // Определяем направление и обновляем местоположение игрока в зависимости от направления.
       switch (direction) {
         case 1:
@@ -74,6 +82,60 @@
           this.y--;
           this.x++;
           break;
+      }
+*/
+    },
+
+   //todo: Новый метод по заданию
+
+    /**
+     * Возвращает координаты, в которых окажется пользователь после хода.
+     * @param {number} direction Направление движения пользователя.
+     * @returns {{x: int, y: int}} Следующая координаты пользователя.
+     */
+    getNextPosition(direction) {
+
+      switch (direction) {
+        case 1:
+          return {
+            x: this.x - 1,
+            y: this.y + 1,
+          };
+        case 2:
+          return {
+            x: this.x,
+            y: this.y + 1,
+          };
+        case 3:
+          return {
+            x: this.x + 1,
+            y: this.y + 1,
+          };
+        case 4:
+          return {
+            x: this.x - 1,
+            y: this.y,
+          };
+        case 6:
+          return {
+            x: this.x + 1,
+            y: this.y,
+          };
+        case 7:
+          return {
+            x: this.x - 1,
+            y: this.y - 1,
+          };
+        case 8:
+          return {
+            x: this.x,
+            y: this.y - 1,
+          };
+        case 9:
+          return {
+            x: this.x + 1,
+            y: this.y - 1,
+          };
       }
     },
   };
@@ -106,8 +168,18 @@
           return;
         }
 
-        // Двигаем игрока.
-        this.player.move(direction);
+        //todo: Вызовы новых методов по заданию
+
+          // Получаем новые координаты игрока.
+        const nextPosition = this.player.getNextPosition(direction);
+
+        // Проверяем, допустим ли переход по данным координатам.
+        if(this.checkNextPosition(nextPosition)){
+
+          // Двигаем игрока(передаем новые координаты).
+          this.player.move(nextPosition);
+
+        }
       }
     },
 
@@ -139,6 +211,8 @@
       console.log(map);
     },
 
+    //todo: Модернизированный метод по заданию
+
     /**
      * Получает и отдает направление от пользователя.
      * @returns {int} Возвращаем направление, введенное пользователем.
@@ -161,6 +235,18 @@
         // Если пользователь ввел корректное значение - отдаем его.
         return direction;
       }
+    },
+
+    //todo: Новый метод по заданию
+
+    /**
+     * Проверяет, не выходит ли пользователь за пределы поля.
+     * @param {{x: int, y: int}} nextPosition Координаты, которые проверяем.
+     * @returns {boolean} Если Координаты в пределах поля то возвращаем true иначе false.
+     */
+    checkNextPosition (nextPosition) {
+      return !(nextPosition.x < 0 || nextPosition.y < 0 || nextPosition.y >= this.settings.rowsCount ||
+        nextPosition.x >= this.settings.colsCount);
     },
   };
 
