@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 4 Задача 3</title>
+</head>
+<body>
+<script>
+  'use strict';
+
+  /**
+   * @type {object[]} Массив с объектами вопросов.
+   */
+  const questions = [
+    {
+      text: 'В парке 8 скамеек. Три покрасили. Сколько скамеек стало в парке?',
+      variantsAnswer: {
+        a: '3 скамейки',
+        b: '5 скамеек',
+        c: '7 cкамеек',
+        d: '8 скамеек',
+      },
+      correctAnswerIndex: 'd',
+    }
+  ];
+
+  const game = {
+    questions,
+    correctAnswerCounter:0,
+    questionCounter: 0,
+
+    resetGame(){
+      this.correctAnswerCounter = 0;
+    },
+
+    // Получаем следуующий вопрос из массива и формируем вывод пользователю
+    getQuestionOfArray(index){
+      let questionString = `${this.questions[index].text}\n\nВведите индех правильного ответа (a, b, c, d)`
+        +` или -1 для выхода\n\n`;
+      for(let ind in this.questions[index].variantsAnswer){
+        questionString += `${ind} - ${this.questions[index].variantsAnswer[ind]}\n`;
+      }
+      return questionString;
+    }
+    // Выводим вопрос пользователю
+    // Проверяем ответ пользователя на корректность ввода
+    // Проверяем ответ пользователя на выход из игры
+    // Проверяем ответ пользователя на правильный ответ
+    // Проверяем закончились вопросы или нет
+  }
+
+  alert(game.getQuestionOfArray(0));
+</script>
+</body>
+</html>
