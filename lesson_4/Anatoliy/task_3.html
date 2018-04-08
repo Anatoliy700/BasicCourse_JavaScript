@@ -21,35 +21,218 @@
         d: '8 скамеек',
       },
       correctAnswerIndex: 'd',
-    }
+    },
+    {
+      text: 'В парке 20 скамеек. Три покрасили. Сколько скамеек стало в парке?',
+      variantsAnswer: {
+        a: '3 скамейки',
+        b: '5 скамеек',
+        c: '20 cкамеек',
+        d: '22 скамейки',
+      },
+      correctAnswerIndex: 'cd',
+    },
   ];
 
+  /**
+   * @@property {questions} questions Массив с объектами вопросов.
+   * @property {int} correctAnswerCounter Счетчик правильных ответов.
+   * @property {int} questionCounter Индекс текущего вопроса.
+   * @property {string} userAnswerExitChar Символ выхода из игры.
+   */
   const game = {
     questions,
-    correctAnswerCounter:0,
+    correctAnswerCounter: 0,
     questionCounter: 0,
+    userAnswerExitChar: 'q',
 
-    resetGame(){
+    /**
+     * Запускаем игру
+     */
+    run() {
+
+      // Переменная для определения повторной игры(false не повторять).
+      let isNewGame = false;
+
+      //Основной цикл игры, повторение цикла - новая игра.
+      do {
+
+        // Сброс игры на начальные параметры.
+        this.resetGame();
+
+        // Цикл вопросов, один цикл - один вопрос.
+        while (!this.isGameOver()) {
+          // Получаем объект текущего вопроса из массива вопросов.
+          const question = this.questions[this.questionCounter];
+          // Получаем сформированную строку с вопросом для вывода пользователю.
+          const outputForUserString = this.getQuestionOfArray(question);
+          // Переменная для хранения ответа пользователя.
+          let userAnswer;
+          // Цикл вывода вопроса пользователю и получение ответа, пока ответ не корректный цикл повторяется.
+          while (true) {
+            // Выводвопроса пользователю.
+            userAnswer = this.outputQuestionToUser(outputForUserString);
+            // Проверка ответа пользователя на корректность.
+            if (this.validateAnswerUserCorrect(userAnswer)) break;
+            // Если ответ не корректный, то выводим сообщение и повторяем вопрос.
+            alert(`Для ответа необходимо ввести один из символов ${this.correctCharForInput()}`);
+          }
+          // Проверка ответа пользователя на выход из игры.
+          if (this.checkAnswerUserExit(userAnswer)) {
+            break;
+          }
+          // Проверяем является ли ответ пользователя верным.
+          if (this.isAnswerCorrect(userAnswer, question)) {
+            // Если ответ верный, увеличиваем счетчик правильных ответов.
+            this.correctAnswerCounter++;
+          }
+          // Увеличиваем счетчик текущего вопроса, что бы в следующем цикле получить следующий вопрос.
+          this.questionCounter++;
+        }
+        // Выводим сообщение пользователю с результатом правильных ответов и предлагаем сыграть еще раз.
+        isNewGame = confirm(`Вы ответили на ${this.questionCounter} ` +
+          `${this.getName(this.questionCounter, 'вопрос', 'вопроса', 'вопросов')}\n` +
+          `из них правильно на ${this.correctAnswerCounter} ` +
+          `${this.getName(this.correctAnswerCounter, 'вопрос', 'вопроса', 'вопросов')}!\n\n` +
+          `Хотите сыграть еще раз?`)
+        // Если пользаватель согласился сыграть еще раз - повторяем цикл, иначе выходим из цикла.
+      } while (isNewGame);
+      // Прощаемся
+      alert('До свидания!')
+    },
+
+    /**
+     * Сбрасываем игру на начальные значения.
+     */
+    resetGame() {
       this.correctAnswerCounter = 0;
+      this.questionCounter = 0;
     },
 
     // Получаем следуующий вопрос из массива и формируем вывод пользователю
-    getQuestionOfArray(index){
-      let questionString = `${this.questions[index].text}\n\nВведите индех правильного ответа (a, b, c, d)`
-        +` или -1 для выхода\n\n`;
-      for(let ind in this.questions[index].variantsAnswer){
-        questionString += `${ind} - ${this.questions[index].variantsAnswer[ind]}\n`;
+    /**
+     * Формирует вывод пользователю (вопроса, вариантов ответа и сопутсвующей информации).
+     * @param {Object} question Объект с вопросом.
+     * @returns {string} Сформированная строка для вывода пользователю.
+     */
+    getQuestionOfArray(question) {
+      let questionString = `Вопрос № ${this.questionCounter + 1}\n${question.text}\n\n` +
+        `Введите индех правильного ответа ${this.correctCharForInput()}\n`;
+      for (let ind in question.variantsAnswer) {
+        questionString += `${ind} - ${question.variantsAnswer[ind]}\n`;
       }
       return questionString;
-    }
+    },
     // Выводим вопрос пользователю
-    // Проверяем ответ пользователя на корректность ввода
-    // Проверяем ответ пользователя на выход из игры
-    // Проверяем ответ пользователя на правильный ответ
-    // Проверяем закончились вопросы или нет
-  }
+    /**
+     * Выводит вопрос пользователю.
+     * @param {string} questionString Сформированная строка для вывода пользователю.
+     * @returns {string} Ответ пользователя.
+     */
+    outputQuestionToUser(questionString) {
+      return prompt(questionString);
+    },
 
-  alert(game.getQuestionOfArray(0));
+    // Проверяем ответ пользователя на корректность ввода
+    /**
+     * Проверяет корректные ли введены данные пользователем.
+     * @param {string} userAnswer Данные введенные пользователем.
+     * @returns {boolean} Если данные корректны true иначе false.
+     */
+    validateAnswerUserCorrect(userAnswer) {
+      return this.correctCharForInput(true).includes(userAnswer);
+    },
+    // Проверяем ответ пользователя на выход из игры
+    /**
+     * Проверяет ответ пользователя на предмет выхода из игры.
+     * @returns {boolean} Возвращает true рользователь захотел выйти из игры инвче false.
+     */
+    checkAnswerUserExit(userAnswer) {
+      return userAnswer === this.userAnswerExitChar;
+    },
+    // Проверяем ответ пользователя на правильный ответ
+    /**
+     * Проверяет является ли ответ пользователя верным.
+     * @param {string} userAnswer Переданный ответ пользователя.
+     * @param {Object} question Объект с текущим вопросом.
+     * @returns {boolean} Если ответ верный возвращаем true иначе false.
+     */
+    isAnswerCorrect(userAnswer, question) {
+      return question.correctAnswerIndex === userAnswer;
+    },
+    // Проверяем закончились вопросы или нет
+    /**
+     * Проверяет закончились вопросы или нет.
+     * @returns {boolean} Возвращает true если вопросы закончились инвче false.
+     */
+    isGameOver() {
+      return this.questionCounter >= this.questions.length;
+    },
+
+
+    // Получаем строку для пользователя с возможнимы символами для ввода
+    /**
+     * Возвращает либо строку для вывода пользователю, либо массив с возможными вариантами ответа.
+     * @param {boolean} key Ключ для определения типа вывода.
+     * @returns {Array||string} Если был передан true, то возвращаем массив с возможными вариантами ответа
+     * иначе возвращаем сформированную, дополняющую строку для выода пользователю с возможными вариантами ответа.
+     */
+    correctCharForInput(key = false) {
+      // Получаем символ для выхода из игры.
+      const charExit = this.userAnswerExitChar;
+      // Массив для символов корректного ответа на вопрос.
+      const arrCorrectChar = [];
+      // Заполняем массив индексами из объекта вариантов ответов объекта с вопросом.
+      for (let ind in this.questions[this.questionCounter].variantsAnswer) {
+        arrCorrectChar.push(ind);
+      }
+      // Строка для вывода пользовалю с правильными символами ввода.
+      const stringOut = `(${arrCorrectChar.join(', ')}) или символ "${charExit}" для выхода.`;
+      // В случае если был передан параметр true, то вместо строки отдаем массив с символами
+      // для проверки корректности ввода
+      if (key) {
+        arrCorrectChar.push(charExit);
+        return arrCorrectChar;
+      }
+      return stringOut;
+    },
+
+    /**
+     * Функция принимает цифру и отдает имя в неоходимом склонении.
+     * @param {number} sum Сумма введенная пользователем.
+     * @param {string} name1 Имя для вывода в первом случае.
+     * @param {string} name2 Имя для вывода во втором случае.
+     * @param {string} name3 Имя для вывода в трельем случае.
+     * @returns {string} Имя в необходимом склонении.
+     */
+    getName(sum, name1, name2, name3) {
+      // Определяем заканчивается ли число на диапазон от 11 до 20 и отдаем необходимое название денежной единици
+      if (10 < (sum % 100) && (sum % 100) <= 20) {
+        return name3;
+      }
+      // Получаем последнее число суммы и по нему будем определять правильное окончание денежной единицы
+      // в остальных случаях
+      let lastUnitSum = sum % 10;
+      switch (lastUnitSum) {
+        case 1:
+          return name1;
+        case 2:
+        case 3:
+        case 4:
+          return name2;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 0:
+          return name3;
+      }
+    },
+  };
+
+  game.run();
+  //console.log(game.getQuestionOfArray(0));
 </script>
 </body>
 </html>
