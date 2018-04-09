@@ -103,7 +103,10 @@
             // Выводвопроса пользователю.
             userAnswer = this.outputQuestionToUser(outputForUserString);
             // Проверка ответа пользователя на корректность.
-            if (this.validateAnswerUserCorrect(userAnswer)) break;
+            if (this.validateAnswerUserCorrect(userAnswer)) {
+              userAnswer = userAnswer.trim().toLowerCase();
+              break;
+            }
             // Если ответ не корректный, то выводим сообщение и повторяем вопрос.
             alert(`Для ответа необходимо ввести один из символов ${this.correctCharForInput()}`);
           }
@@ -149,7 +152,9 @@
       let questionString = `Вопрос № ${this.questionCounter + 1}\n${question.text}\n\n` +
         `Введите индех правильного ответа ${this.correctCharForInput()}\n`;
       for (let ind in question.variantsAnswer) {
-        questionString += `${ind} - ${question.variantsAnswer[ind]}\n`;
+        if (question.variantsAnswer.hasOwnProperty(ind)) {
+          questionString += `${ind} - ${question.variantsAnswer[ind]}\n`;
+        }
       }
       return questionString;
     },
@@ -170,7 +175,8 @@
      * @returns {boolean} Если данные корректны true иначе false.
      */
     validateAnswerUserCorrect(userAnswer) {
-      return this.correctCharForInput(true).includes(userAnswer);
+
+      return userAnswer !== null && this.correctCharForInput(true).includes(userAnswer.trim().toLowerCase());
     },
     // Проверяем ответ пользователя на выход из игры
     /**
@@ -214,7 +220,9 @@
       const arrCorrectChar = [];
       // Заполняем массив индексами из объекта вариантов ответов объекта с вопросом.
       for (let ind in this.questions[this.questionCounter].variantsAnswer) {
-        arrCorrectChar.push(ind);
+        if (this.questions[this.questionCounter].variantsAnswer.hasOwnProperty(ind)) {
+          arrCorrectChar.push(ind);
+        }
       }
       // Строка для вывода пользовалю с правильными символами ввода.
       const stringOut = `(${arrCorrectChar.join(', ')}) или символ "${charExit}" для выхода.`;
