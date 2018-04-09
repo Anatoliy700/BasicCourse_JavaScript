@@ -49,44 +49,44 @@
 
       this.x = nextPosition.x;
       this.y = nextPosition.y;
-/*
-       //todo: Модернизация старого метода по пункту 1 задания
+      /*
+             //todo: Модернизация старого метода по пункту 1 задания
 
-      // Определяем направление и обновляем местоположение игрока в зависимости от направления.
-      switch (direction) {
-        case 1:
-          this.y++;
-          this.x--;
-          break;
-        case 2:
-          this.y++;
-          break;
-        case 3:
-          this.y++;
-          this.x++;
-          break;
-        case 4:
-          this.x--;
-          break;
-        case 6:
-          this.x++;
-          break;
-        case 7:
-          this.y--;
-          this.x--;
-          break;
-        case 8:
-          this.y--;
-          break;
-        case 9:
-          this.y--;
-          this.x++;
-          break;
-      }
-*/
+            // Определяем направление и обновляем местоположение игрока в зависимости от направления.
+            switch (direction) {
+              case 1:
+                this.y++;
+                this.x--;
+                break;
+              case 2:
+                this.y++;
+                break;
+              case 3:
+                this.y++;
+                this.x++;
+                break;
+              case 4:
+                this.x--;
+                break;
+              case 6:
+                this.x++;
+                break;
+              case 7:
+                this.y--;
+                this.x--;
+                break;
+              case 8:
+                this.y--;
+                break;
+              case 9:
+                this.y--;
+                this.x++;
+                break;
+            }
+      */
     },
 
-   //todo: Новый метод по заданию
+    //todo: Новый метод по заданию
 
     /**
      * Возвращает координаты, в которых окажется пользователь после хода.
@@ -94,49 +94,42 @@
      * @returns {{x: int, y: int}} Следующая координаты пользователя.
      */
     getNextPosition(direction) {
+      const nextPosition = {
+        x: this.x,
+        y: this.y,
+      };
 
       switch (direction) {
         case 1:
-          return {
-            x: this.x - 1,
-            y: this.y + 1,
-          };
+          nextPosition.y++;
+          nextPosition.x--;
+          break;
         case 2:
-          return {
-            x: this.x,
-            y: this.y + 1,
-          };
+          nextPosition.y++;
+          break;
         case 3:
-          return {
-            x: this.x + 1,
-            y: this.y + 1,
-          };
+          nextPosition.y++;
+          nextPosition.x++;
+          break;
         case 4:
-          return {
-            x: this.x - 1,
-            y: this.y,
-          };
+          nextPosition.x--;
+          break;
         case 6:
-          return {
-            x: this.x + 1,
-            y: this.y,
-          };
+          nextPosition.x++;
+          break;
         case 7:
-          return {
-            x: this.x - 1,
-            y: this.y - 1,
-          };
+          nextPosition.y--;
+          nextPosition.x--;
+          break;
         case 8:
-          return {
-            x: this.x,
-            y: this.y - 1,
-          };
+          nextPosition.y--;
+          break;
         case 9:
-          return {
-            x: this.x + 1,
-            y: this.y - 1,
-          };
+          nextPosition.y--;
+          nextPosition.x++;
+          break;
       }
+      return nextPosition;
     },
   };
 
@@ -170,11 +163,11 @@
 
         //todo: Вызовы новых методов по заданию
 
-          // Получаем новые координаты игрока.
+        // Получаем новые координаты игрока.
         const nextPosition = this.player.getNextPosition(direction);
 
         // Проверяем, допустим ли переход по данным координатам.
-        if(this.checkNextPosition(nextPosition)){
+        if (this.checkNextPosition(nextPosition)) {
 
           // Двигаем игрока(передаем новые координаты).
           this.player.move(nextPosition);
@@ -244,8 +237,11 @@
      * @param {{x: int, y: int}} nextPosition Координаты, которые проверяем.
      * @returns {boolean} Если Координаты в пределах поля то возвращаем true иначе false.
      */
-    checkNextPosition (nextPosition) {
-      return !(nextPosition.x < 0 || nextPosition.y < 0 || nextPosition.y >= this.settings.rowsCount ||
+    checkNextPosition(nextPosition) {
+      return !(
+        nextPosition.x < 0 ||
+        nextPosition.y < 0 ||
+        nextPosition.y >= this.settings.rowsCount ||
         nextPosition.x >= this.settings.colsCount);
     },
   };
