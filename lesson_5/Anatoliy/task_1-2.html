@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Базовый курс JavaScript: Урок 5 Задача 1 и 2</title>
+  <style>
+
+    table {
+      border-collapse: collapse;
+      margin: auto;
+    }
+
+    td {
+      width: 50px;
+      height: 50px;
+      background-color: #EEEEEE;
+      border: 1px solid #888888;
+      text-align: center;
+      font-weight: bold;
+      font-size: 2em;
+    }
+
+    .colBlack {
+      background-color: #888888;
+    }
+
+  </style>
+</head>
+<body>
+
+<table id="chessboard"></table>
+
+<script>
+  'use strict';
+
+  /**
+   *
+   * @property {HTMLElement} chessBoard Контейнер игры (DOM Элемент).
+   * @property {Object[]} chessFigures Массив объектов шахматных фигур.
+   * @property {Object} figuresHtml Объект с HTML кодом отображения шахматных фигур.
+   */
+  const chess = {
+    chessBoard: document.getElementById('chessboard'),
+    chessFigures: [
+      {name: 'R', color: 'w', pos: 'a1'},
+      {name: 'N', color: 'w', pos: 'b1'},
+      {name: 'B', color: 'w', pos: 'c1'},
+      {name: 'K', color: 'w', pos: 'd1'},
+      {name: 'Q', color: 'w', pos: 'e1'},
+      {name: 'B', color: 'w', pos: 'f1'},
+      {name: 'N', color: 'w', pos: 'g1'},
+      {name: 'R', color: 'w', pos: 'h1'},
+      {name: 'p', color: 'w', pos: 'a2'},
+      {name: 'p', color: 'w', pos: 'b2'},
+      {name: 'p', color: 'w', pos: 'c2'},
+      {name: 'p', color: 'w', pos: 'd2'},
+      {name: 'p', color: 'w', pos: 'e2'},
+      {name: 'p', color: 'w', pos: 'f2'},
+      {name: 'p', color: 'w', pos: 'g2'},
+      {name: 'p', color: 'w', pos: 'h2'},
+      {name: 'R', color: 'b', pos: 'a8'},
+      {name: 'N', color: 'b', pos: 'b8'},
+      {name: 'B', color: 'b', pos: 'c8'},
+      {name: 'K', color: 'b', pos: 'd8'},
+      {name: 'Q', color: 'b', pos: 'e8'},
+      {name: 'B', color: 'b', pos: 'f8'},
+      {name: 'N', color: 'b', pos: 'g8'},
+      {name: 'R', color: 'b', pos: 'h8'},
+      {name: 'p', color: 'b', pos: 'a7'},
+      {name: 'p', color: 'b', pos: 'b7'},
+      {name: 'p', color: 'b', pos: 'c7'},
+      {name: 'p', color: 'b', pos: 'd7'},
+      {name: 'p', color: 'b', pos: 'e7'},
+      {name: 'p', color: 'b', pos: 'f7'},
+      {name: 'p', color: 'b', pos: 'g7'},
+      {name: 'p', color: 'b', pos: 'h7'},
+    ],
+    figuresHtml: {
+      Rw: '&#9814;',
+      Nw: '&#9816;',
+      Bw: '&#9815;',
+      Kw: '&#9812;',
+      Qw: '&#9813;',
+      pw: '&#9817;',
+      Rb: '&#9820;',
+      Nb: '&#9822;',
+      Bb: '&#9821;',
+      Kb: '&#9818;',
+      Qb: '&#9819;',
+      pb: '&#9823;',
+    },
+
+    /**
+     * Отображает шахматные фигуры на доске согласно их стартовых позиций.
+     */
+    renderFigures() {
+      for (let figureObject of this.chessFigures) {
+        document.querySelector(`[data-position=${figureObject.pos}]`)
+          .innerHTML = this.figuresHtml[figureObject.name + figureObject.color];
+      }
+    },
+
+    /**
+     * Отображает шахматное поле
+     */
+    renderMap() {
+      /**
+       * Массив с символами для именования столбцов.
+       * @type {string[]} colLetters
+       */
+      const colLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+      // Цикл для формирования строк.
+      for (let row = 0, rowNum = 9; row < 10; row++, rowNum--) {
+        /**
+         * Создаем новую строку.
+         * @type {HTMLTableRowElement} newRow
+         */
+        const newRow = document.createElement('tr');
+
+        // Добавляем новую строку к контейнеру игры.
+        this.chessBoard.appendChild(newRow);
+
+        // Цикл для формирования столбцов.
+        for (let col = 0; col < 10; col++) {
+          /**
+           * Создаем новую ячейку.
+           * @type {HTMLTableDataCellElement} newCol
+           */
+          const newCol = document.createElement('td');
+          // Добавляем новую ячейку с строке.
+          newRow.appendChild(newCol);
+          // Проверяем, будет ячейка черной или нет.
+          if (this.isCellsBlack(row, col)) {
+            // Присваиваем класс.
+            newCol.className = 'colBlack';
+            // newCol.style.backgroundColor = '#7a7a7a';
+          }
+          // Расставляем нумирацию строк.
+          if (rowNum !== 0 && rowNum !== 9 && (col === 0 || col === 9)) {
+            newCol.textContent = rowNum.toString();
+          }
+          // Расставляем символы столбцов.
+          if (col !== 0 && col !== 9 && (rowNum === 0 || rowNum === 9)) {
+            newCol.textContent = colLetters[col - 1];
+          }
+          // Расстоляем data атрибут с координаиами ячейки.
+          if (rowNum < 9 && rowNum > 0 && col > 0 && col < 9) {
+            newCol.dataset.position = colLetters[col - 1] + rowNum;
+          }
+        }
+      }
+    },
+
+    /**
+     * Определяет, будет ячейка окрашена в черный цвет или нет.
+     * @param {int} rowNum Номер строки.
+     * @param {int} colNum Номер столбца.
+     * @returns {boolean} Если я чейка должна быть черной то true иначе false.
+     */
+    isCellsBlack(rowNum, colNum) {
+      if (rowNum === 0 || rowNum === 9 || colNum === 0 || colNum === 9) return false;
+      else if (!((rowNum % 2 === 0 && colNum % 2 === 0) || (rowNum % 2 === 1 && colNum % 2 === 1))) return true;
+      return false;
+    },
+
+  };
+  // Отрисовываем поле.
+  chess.renderMap();
+  // Отрисовываем фигуры.
+  chess.renderFigures();
+</script>
+</body>
+</html>
