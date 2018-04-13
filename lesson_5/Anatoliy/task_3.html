@@ -24,7 +24,7 @@
 </head>
 <body>
 <div class="form-wrap">
-  <form class="form" action="#" onsubmit="return validForm.run(this)">
+  <form class="form" action="#">
     <div class="row">
       <div class="col" id="test">
         <input type="text" name="name" class="form-control" placeholder="Имя">
@@ -52,7 +52,20 @@
   /**
    * Объект для валидации формы.
    */
-  const validForm = {
+  const form = {
+
+    formEl: null,
+    inputs: null,
+
+    init() {
+      this.formEl = document.querySelector('.form');
+      this.formEl.addEventListener('submit', e => this.run(e));
+      this.inputs = this.formEl.querySelectorAll('input');
+      // Проходимся по элементам input и вешаем на них событие click для вызова метода сброса поля.
+      for (const element of this.inputs) {
+        element.addEventListener('focus', e => form.resetInput(e));
+      }
+    },
 
     /**
      * Выводит сообщение об ошибке ввода.
@@ -70,11 +83,11 @@
         // Добавляем переданное сообщение об ошибке.
         errMsg.textContent = message;
         // Добавляем клас для стилизации.
-        errMsg.className = 'invalid-feedback';
+        errMsg.classList.add('invalid-feedback');
         // Добавляем созданный элемент к родителю.
         element.parentElement.appendChild(errMsg);
         // Добавляем переданному элементу input клас для стилизации
-        element.className += ' is-invalid';
+        element.classList.add('is-invalid');
       }
     },
 
@@ -86,34 +99,34 @@
       // Находим элемент по классу и удаляем его.
       element.parentElement.querySelector('.invalid-feedback').remove();
       // Удаляем класс "is-invalid" у элемента input.
-      element.className = 'form-control';
+      element.classList.remove('is-invalid');
     },
 
     /**
      * Сбрасывает сообщения об ошибке ввода и очищает поле ввода, если была ошибка ввода.
      */
-    resetInput() {
+    resetInput(event) {
       // Проверяем есть ли у input сообщение об ошибке и если есть, то удаляем и очищаем поле ввода.
-      if (this.parentElement.lastChild.className === 'invalid-feedback') {
-        validForm.delErrMsg(this); // Как сдесь правильно обратьсьтя validForm? this здесь ссылается на элемент,
-                                   // в котором произошло событие
-        this.value = '';
+      if (event.currentTarget.parentElement.lastChild.className === 'invalid-feedback') {
+        this.delErrMsg(event.currentTarget); // Как сдесь правильно обратьсьтя validForm? this здесь ссылается на элемент,
+        // в котором произошло событие
+        event.currentTarget.value = '';
       }
     },
 
     /**
      * Проверяет корректность ввода.
-     * @param {HTMLElement} form Форма, в которой производится валидация.
+     * @param {Event} event Форма, в которой производится валидация.
      * @returns {boolean} Если форма прошла валидацию, возвращаем true иначе false.
      */
-    run(form) {
+    run(event) {
       // Получаем все элементы input.
-      const inputs = form.querySelectorAll('input');
+      // const inputs = form.querySelectorAll('input');
       // Переменная которая возвращается по завершении валидации(true - форма может быть отправлена,
       // false - форма не может быть отправлена).
       let valid = true;
       // Проходим по массиву с элементами input/
-      for (const element of inputs) {
+      for (const element of this.inputs) {
         // В зависимости от имени поля, проводим соответствующую проверку.
         switch (element.name) {
           case 'name':
@@ -151,19 +164,26 @@
             break;
         }
       }
-      return valid;
+      if (!valid){
+        event.preventDefault();
+      }
     },
   };
 
-  /**
-   * Получаем список всех элементов input.
-   * @type {NodeListOf<Element>}
-   */
-  const inputs = document.querySelectorAll('input');
-  // Проходимся по элементам input и вешаем на них событие click для вызова метода сброса поля.
-  for (const element of inputs) {
-    element.addEventListener('click', validForm.resetInput);
-  }
+
+  form.init();
+  /*
+    /!**
+     * Получаем список всех элементов input.
+     * @type {NodeListOf<Element>}
+     *!/
+    document.querySelector('.form').addEventListener("submit", e => form.run(e));
+    const inputs = document.querySelectorAll('input');
+    // Проходимся по элементам input и вешаем на них событие click для вызова метода сброса поля.
+    for (const element of inputs) {
+      element.addEventListener('click', form.resetInput);
+    }
+  */
 </script>
 <script src="packages/jquery/jquery-3.2.1.slim.min.js"></script>
 <script src="packages/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
