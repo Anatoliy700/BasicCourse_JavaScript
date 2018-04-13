@@ -51,12 +51,17 @@
 
   /**
    * Объект для валидации формы.
+   * @property {HTMLElement} formEl  Элемент формы.
+   * @property {NodeList} Список элементов input.
    */
   const form = {
 
     formEl: null,
     inputs: null,
 
+    /**
+     * Инизиализация формы.
+     */
     init() {
       this.formEl = document.querySelector('.form');
       this.formEl.addEventListener('submit', e => this.run(e));
