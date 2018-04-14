@@ -67,7 +67,7 @@ const gallery = {
     // Ставим обработчик событий на случай если запрашиваемая картинка не доступна.
     imgTest.addEventListener('load', () => image.src = src);
     imgTest.addEventListener('error', () => image.src = this.settings.openedImageError);
-    // img.onerror = event => console.log(event);
+    // image.onerror = event => console.log(event);
     imgTest.src = src;
   },
 
