@@ -10,9 +10,9 @@
  * @property {string} settings.openedImageCloseBtnSrc Путь до картинки кнопки закрыть.
  * @property {string} settings.openedImageError Путь до картинки которая выводится в случае ошибки
  * загрузки изображения.
+ * @property {HTMLElement} openedImageEl Объект текущей картинки.
  */
 const gallery = {
-  //todo Добавлено новое свойство.
   settings: {
     previewSelector: '.mySuperGallery',
     openedImageWrapperClass: 'galleryWrapper',
@@ -21,10 +21,13 @@ const gallery = {
     openedImageCloseBtnClass: 'galleryWrapper__close',
     openedImageCloseBtnSrc: 'images/gallery/close.png',
     openedImageError: 'images/gallery/error.jpg',
+
+    //todo: Добавлено новое свойство.
     openedDivNextImage: 'galleryWrapper__next',
     openedDivPrevImage: 'galleryWrapper__prev',
   },
 
+  //todo: Добавлено новое свойство.
   openedImageEl: null,
 
   /**
@@ -43,7 +46,7 @@ const gallery = {
       .addEventListener('click', event => this.containerClickHandler(event));
   },
 
-  //todo Модернизированный метод.
+  //todo: Модернизированный метод.
   /**
    * Обработчик события клика для открытия картинки.
    * @param {MouseEvent} event Событие клики мышью.
@@ -59,13 +62,14 @@ const gallery = {
     this.openImage(event.target);
   },
 
-  //todo Модернизированный метод.
+  //todo: Модернизированный метод.
   /**
    * Открывает картинку.
-   * @param {HTMLElement} element Ссылка на картинку, которую надо открыть.
+   * @param {HTMLElement} element Элемент, который надо открыть.
    */
   openImage(element) {
 
+    //Сохраняем полученный элемент в свойство, где храним текущий элемент.
     this.openedImageEl = element;
     // Достаем ссылку на картинку из полученного HTMLElement,  из целевого тега (data-full_image_url аттрибут).
     const src = element.dataset.full_image_url;
@@ -126,6 +130,8 @@ const gallery = {
     // Добавляем контейнер-обертку в тег body.
     document.body.appendChild(galleryWrapperElement);
 
+    //todo: Модернизация метода.
+
     // Добавляем кнопли для переключения картинок.
     const btnNext = document.createElement('div');
     btnNext.classList.add(this.settings.openedDivNextImage);
@@ -142,35 +148,48 @@ const gallery = {
     return galleryWrapperElement;
   },
 
+  // todo: Новый метод.
   /**
    * Выводит следующий элемент (картинку) от открытой или первую картинку в контейнере,
    * если текущая открытая картинка последняя.
    */
   nextImage() {
-    // Получаем элемент справа от текущей открытой картинки.
+    // Получаем элемент справа от текущей открытой картинки и открываем его.
+    // Получаем коллекцию всех элементов.
     const arrImg = this.openedImageEl.parentElement.children;
+    // Проходимся по коллекции и ищем текущее открытое изображение.
     for (let img in arrImg) {
-      if (arrImg[img].src === this.openedImageEl.src) {
-        const nextElem = (++img < arrImg.length) ? arrImg[img] : arrImg[0];
-        this.openImage(nextElem);
-        break;
+      if (arrImg.hasOwnProperty(img)) {
+        if (arrImg[img].src === this.openedImageEl.src) {
+          // Находим текущий элемент и берем следующий после него, если он последний то берем первый.
+          const nextElem = (++img < arrImg.length) ? arrImg[img] : arrImg[0];
+          // Выводим пользователю.
+          this.openImage(nextElem);
+          break;
+        }
       }
     }
-    // Если элемент справа есть, его и возвращаем, если нет, то берем первый элемент в контейнере миниатюр.
   },
 
+  // todo: Новый метод.
   /**
    * Выводит предыдущий элемент (картинку) от открытой или последнюю картинку в контейнере,
    * если текущая открытая картинка первая.
    */
   prevImage() {
     // Получаем элемент слева от текущей открытой картинки.
+    // Получаем коллекцию всех элементов.
     const arrImg = this.openedImageEl.parentElement.children;
+    // Проходимся по коллекции и ищем текущее открытое изображение.
     for (let img in arrImg) {
-      if (arrImg[img].src === this.openedImageEl.src) {
-        const prevElem = (--img >= 0) ? arrImg[img] : arrImg[arrImg.length - 1];
-        this.openImage(prevElem);
-        break;
+      if (arrImg.hasOwnProperty(img)) {
+        if (arrImg[img].src === this.openedImageEl.src) {
+          // Находим текущий элемент и берем предыдущий перед ним, если он первый то берем последний.
+          const prevElem = (--img >= 0) ? arrImg[img] : arrImg[arrImg.length - 1];
+          // Выводим пользователю.
+          this.openImage(prevElem);
+          break;
+        }
       }
     }
     // Если элемент слева есть, его и возвращаем, если нет, то берем последний элемент в контейнере миниатюр.
