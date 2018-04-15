@@ -1,4 +1,5 @@
 "use strict";
+import * as Lockr from 'lockr.js';
 
 /**
  * Объект реализующий логку работы корзины товаров.
@@ -11,10 +12,13 @@ const basket = {
   settings: {
     countSelector: '#basket__count',
     priceSelector: '#basket__price',
+    classButtonBuy: '.buy-btn',
+    classButtonClear: '.clear-btn',
   },
   goods: [],
   countEl: null,
   priceEl: null,
+  localStorageName: 'basketGoods',
 
   /**
    * Инициализирует переменные корзины и выводит их пользователю.
@@ -24,12 +28,13 @@ const basket = {
     Object.assign(this.settings, settings);
     this.countEl = document.querySelector(this.settings.countSelector);
     this.priceEl = document.querySelector(this.settings.priceSelector);
-    this.goods = [];
+    this.goods = Lockr.get(this.localStorageName);
 
-    const arrBtn = document.querySelectorAll('.buy-btn')
-    // for () {
-    // .addEventListener('click', event => this.clickEventHandlerBtn(event));
-    // }
+    const arrBtn = document.querySelectorAll(this.classButtonBuy);
+    for (const btn of arrBtn) {
+      btn.addEventListener('click', event => this.clickEventHandlerBtn(event));
+    }
+    document.querySelector(this.classButtonClear).addEventListener('click', () => this.clearBasket);
     this.render();
   },
 
@@ -67,6 +72,7 @@ const basket = {
         price: Number.parseInt(goodPrice),
       }
     );
+    Lockr.set(this.localStorageName, this.goods);
     this.render();
   },
 
@@ -79,6 +85,10 @@ const basket = {
     this.add(btn.dataset.name, btn.dataset.price);
   },
 
+  clearBasket() {
+    this.goods = [];
+    Lockr.flush();
+  },
 };
 
 window.onload = () => basket.init();
