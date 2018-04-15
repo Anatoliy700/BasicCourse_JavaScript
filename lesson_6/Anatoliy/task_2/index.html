@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Корзина</title>
+  <style>
+    .item{
+      display: flex;
+      align-items: center;
+    }
+    .item > img {
+      width: 200px;
+      margin-right: 20px;
+    }
+    .item > .price{
+      margin-right: 20px;
+    }
+    #basket__count{
+      margin-right: 20px;
+    }
+  </style>
+</head>
+<body>
+<div id="container">
+  <div class="item"><img src="images/cam.jpg" alt="Камера"><span class="price">Цена: 2000 руб.</span>
+    <button class="buy-btn" data-price="2000" data-name="Камера">Купить</button>
+  </div>
+  <div class="item"><img src="images/keyboard.jpg" alt="Клавиатура"><span class="price">Цена: 500 руб.</span>
+    <button class="buy-btn" data-price="500" data-name="Клавиатура">Купить</button>
+  </div>
+  <div class="item"><img src="images/usb-flash-drive.jpg" alt="USB Flesh Cart"><span
+    class="price">Цена: 1500 руб.</span>
+    <button class="buy-btn" data-price="1500" data-name="usbFleshCart">Купить</button>
+  </div>
+  <div id="basket"><span>Количество товаров: </span><span id="basket__count">0</span><span> Итого: </span><span
+    id="basket__price">0</span></div>
+</div>
+<script src="js.js"></script>
+</body>
+</html>
