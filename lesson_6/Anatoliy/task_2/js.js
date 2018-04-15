@@ -1,5 +1,5 @@
 "use strict";
-import * as Lockr from 'lockr.js';
+//import * as lockr from 'lockr.js';
 
 /**
  * Объект реализующий логку работы корзины товаров.
@@ -12,13 +12,13 @@ const basket = {
   settings: {
     countSelector: '#basket__count',
     priceSelector: '#basket__price',
+    localStorageName: 'basketGoods',
     classButtonBuy: '.buy-btn',
     classButtonClear: '.clear-btn',
   },
   goods: [],
   countEl: null,
   priceEl: null,
-  localStorageName: 'basketGoods',
 
   /**
    * Инициализирует переменные корзины и выводит их пользователю.
@@ -28,13 +28,15 @@ const basket = {
     Object.assign(this.settings, settings);
     this.countEl = document.querySelector(this.settings.countSelector);
     this.priceEl = document.querySelector(this.settings.priceSelector);
-    this.goods = Lockr.get(this.localStorageName);
-
-    const arrBtn = document.querySelectorAll(this.classButtonBuy);
+    // Проверяем хранятся ли данные в localStorage и подгружаем если есть или отдаем пустой массив.
+    const arr = Lockr.get(this.settings.localStorageName);
+    this.goods = (arr) ? arr : [];
+    // Вешаем обработчики событий.
+    const arrBtn = document.querySelectorAll(this.settings.classButtonBuy);
     for (const btn of arrBtn) {
       btn.addEventListener('click', event => this.clickEventHandlerBtn(event));
     }
-    document.querySelector(this.classButtonClear).addEventListener('click', () => this.clearBasket);
+    document.querySelector(this.settings.classButtonClear).addEventListener('click', () => this.clearBasket());
     this.render();
   },
 
@@ -72,7 +74,7 @@ const basket = {
         price: Number.parseInt(goodPrice),
       }
     );
-    Lockr.set(this.localStorageName, this.goods);
+    Lockr.set(this.settings.localStorageName, this.goods);
     this.render();
   },
 
@@ -85,9 +87,13 @@ const basket = {
     this.add(btn.dataset.name, btn.dataset.price);
   },
 
+  /**
+   * Удаляет данные в localStorage.
+   */
   clearBasket() {
     this.goods = [];
-    Lockr.flush();
+    Lockr.rm(this.settings.localStorageName);
+    this.render();
   },
 };
 
