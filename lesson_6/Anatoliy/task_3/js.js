@@ -154,21 +154,12 @@ const gallery = {
    * если текущая открытая картинка последняя.
    */
   nextImage() {
-    // Получаем элемент справа от текущей открытой картинки и открываем его.
-    // Получаем коллекцию всех элементов.
-    const arrImg = this.openedImageEl.parentElement.children;
-    // Проходимся по коллекции и ищем текущее открытое изображение.
-    for (let img in arrImg) {
-      if (arrImg.hasOwnProperty(img)) {
-        if (arrImg[img].src === this.openedImageEl.src) {
-          // Находим текущий элемент и берем следующий после него, если он последний то берем первый.
-          const nextElem = (++img < arrImg.length) ? arrImg[img] : arrImg[0];
-          // Выводим пользователю.
-          this.openImage(nextElem);
-          break;
-        }
-      }
-    }
+    // Получаем элемент справа от текущей открытой картинки и открываем его если данный элеменит последний
+    // то открываем первый элемент.
+    const nextImgEl = (this.openedImageEl.nextElementSibling)
+      ? this.openedImageEl.nextElementSibling
+      : this.openedImageEl.parentElement.firstElementChild;
+      this.openImage(nextImgEl);
   },
 
   // todo: Новый метод.
@@ -177,22 +168,12 @@ const gallery = {
    * если текущая открытая картинка первая.
    */
   prevImage() {
-    // Получаем элемент слева от текущей открытой картинки.
-    // Получаем коллекцию всех элементов.
-    const arrImg = this.openedImageEl.parentElement.children;
-    // Проходимся по коллекции и ищем текущее открытое изображение.
-    for (let img in arrImg) {
-      if (arrImg.hasOwnProperty(img)) {
-        if (arrImg[img].src === this.openedImageEl.src) {
-          // Находим текущий элемент и берем предыдущий перед ним, если он первый то берем последний.
-          const prevElem = (--img >= 0) ? arrImg[img] : arrImg[arrImg.length - 1];
-          // Выводим пользователю.
-          this.openImage(prevElem);
-          break;
-        }
-      }
-    }
-    // Если элемент слева есть, его и возвращаем, если нет, то берем последний элемент в контейнере миниатюр.
+    // Получаем элемент слева от текущей открытой картинки открываем его если данный элеменит перый
+    // то открываем последний элемент.
+    const prevImgEl = (this.openedImageEl.previousElementSibling)
+      ? this.openedImageEl.previousElementSibling
+      : this.openedImageEl.parentElement.lastElementChild;
+    this.openImage(prevImgEl);
   },
 
   /**
