@@ -56,10 +56,10 @@ const basket = {
    * Выводит на страницу количество и стоимость всех выбранных товаров.
    */
   render() {
-    const qtGoods = this.goods.length;
-    const allPrice = this.getGoodsPrice();
-    this.countEl.textContent = qtGoods;
-    this.priceEl.textContent = allPrice;
+    // const qtGoods = this.goods.length;
+    // const allPrice = this.getGoodsPrice();
+    this.countEl.textContent = this.goods.length;
+    this.priceEl.textContent = this.getGoodsPrice();
   },
 
   /**
