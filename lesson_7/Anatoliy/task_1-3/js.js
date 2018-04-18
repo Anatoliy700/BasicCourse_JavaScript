@@ -1,5 +1,80 @@
 "use strict";
 
+const settings = {
+  rowsCount: 21,
+  colsCount: 21,
+  speed: 2,
+  winLength: 50,
+
+  //TODO task_1: Добавлено новое свойство(Определяет ID HTML элемента счетсика)
+  idScoreCountEl: 'score-count',
+
+  quantityWall: 5,
+
+  /**
+   * Проверка значений настроек игры.
+   * @returns {boolean} true, если настройки верные, иначе false.
+   */
+  validate() {
+    if (this.rowsCount < 10 || this.rowsCount > 30) {
+      console.error('Неверные настройки, значение rowsCount должно быть в диапазоне [10, 30].');
+      return false;
+    }
+
+    if (this.colsCount < 10 || this.colsCount > 30) {
+      console.error('Неверные настройки, значение colsCount должно быть в диапазоне [10, 30].');
+      return false;
+    }
+
+    if (this.speed < 1 || this.speed > 10) {
+      console.error('Неверные настройки, значение speed должно быть в диапазоне [1, 10].');
+      return false;
+    }
+
+    if (this.winLength < 5 || this.winLength > 50) {
+      console.error('Неверные настройки, значение winLength должно быть в диапазоне [5, 50].');
+      return false;
+    }
+
+    return true;
+  },
+};
+
+/**
+ * Объект работающий со всеми стенами в игре.
+ * @property {{x: int, y: int}[]} points Массив объектов с координатами стен.
+ */
+const walls = {
+
+  points: [],
+
+  /**
+   * Инициализация стен в игре.
+   * @param {{x: int, y: int}[]} wallsPoints Массив точек со стенами.
+   */
+  init(wallsPoints) {
+    this.points = wallsPoints;
+  },
+
+  /**
+   * Проверяет стоит ли на точке стена.
+   * @param {{x: int, y: int}} point Точка, которую проверяем, стоит ли в ней стена.
+   * @returns {boolean} true если точка содержит стену, иначе false.
+   */
+  isWallPoint(point) {
+
+  },
+
+  /**
+   * Меняет позицию случайной стены на переданную точку.
+   * @param {{x: int, y: int}} point Точка, куда будет поставлена новая стенка.
+   */
+  changeRandomWallPosition(point) {
+    // Получаем индекс случайной стенки в массиве всех стенок.
+    // Ставим стенке новую точку на карте.
+  },
+
+};
 
 /**
  * Объект змейки.
@@ -161,6 +236,8 @@ const renderer = {
 
     // Отображаем еду.
     this.cells[`x${foodPoint.x}_y${foodPoint.y}`].classList.add('food');
+
+
   },
 };
 
@@ -255,43 +332,6 @@ const status = {
  * @property {int} speed Скорость змейки.
  * @property {int} winLength Длина змейки для победы.
  */
-const settings = {
-  rowsCount: 21,
-  colsCount: 21,
-  speed: 2,
-  winLength: 50,
-
-  //TODO task_1: Добавлено новое свойство(Определяет ID HTML элемента счетсика)
-  idScoreCountEl: 'score-count',
-
-  /**
-   * Проверка значений настроек игры.
-   * @returns {boolean} true, если настройки верные, иначе false.
-   */
-  validate() {
-    if (this.rowsCount < 10 || this.rowsCount > 30) {
-      console.error('Неверные настройки, значение rowsCount должно быть в диапазоне [10, 30].');
-      return false;
-    }
-
-    if (this.colsCount < 10 || this.colsCount > 30) {
-      console.error('Неверные настройки, значение colsCount должно быть в диапазоне [10, 30].');
-      return false;
-    }
-
-    if (this.speed < 1 || this.speed > 10) {
-      console.error('Неверные настройки, значение speed должно быть в диапазоне [1, 10].');
-      return false;
-    }
-
-    if (this.winLength < 5 || this.winLength > 50) {
-      console.error('Неверные настройки, значение winLength должно быть в диапазоне [5, 50].');
-      return false;
-    }
-
-    return true;
-  },
-};
 
 //TODO task_1: Новый объект счетчика игры.
 /**
@@ -354,6 +394,7 @@ const game = {
   snake,
   food,
   status,
+  walls,
 
   //TODO task_1: Добавлено свойство ссылающееся на объект счетчика.
   score,
@@ -380,6 +421,15 @@ const game = {
     this.setEventHandlers();
     // Ставим игру в начальное положение.
     this.reset();
+
+    this.walls.init(this.getRandomCoordinates(this.settings.quantityWall, this.getDisabledWallCells()));
+
+/*
+    this.getDisabledWallCells().forEach((p)=>{
+      this.renderer.cells[`x${p.x}_y${p.y}`].style.backgroundColor = 'blue';
+    });
+*/
+
   },
 
   /**
@@ -515,25 +565,35 @@ const game = {
   },
 
   /**
-   * Отдает случайную не занятую точку на карте.
-   * @return {{x: int, y: int}} Точку с координатами.
+   * Отдает случайную не занятую точку на карте или массив точек.
+   * @return {{x: int, y: int}||{x: int, y: int}[]} Точку с координатами или массив точек.
    */
-  getRandomCoordinates() {
+  getRandomCoordinates(count = 1, exclude = []) {
     // Занятые точки на карте.
-    const exclude = [this.food.getFoodCoordinates(), ...this.snake.body];
-    // Пытаемся получить точку ничем не занятую на карте.
-    while (true) {
-      // Случайно сгенерированная точка.
-      const rndPoint = {
-        x: Math.floor(Math.random() * this.settings.colsCount),
-        y: Math.floor(Math.random() * this.settings.rowsCount),
-      };
+    const excludePoints = [this.food.getFoodCoordinates(), ...this.snake.body, ...exclude];
+    let arrPoints = [];
+    for (let i = 0; i < count; i++) {
+      // Пытаемся получить точку ничем не занятую на карте.
+      while (true) {
+        // Случайно сгенерированная точка.
+        const rndPoint = {
+          x: Math.floor(Math.random() * this.settings.colsCount),
+          y: Math.floor(Math.random() * this.settings.rowsCount),
+        };
 
-      // Если точка ничем не занята, то возвращаем ее из функции.
-      if (!exclude.some(exPoint => rndPoint.x === exPoint.x && rndPoint.y === exPoint.y)) {
-        return rndPoint;
+        // Если точка ничем не занята, то возвращаем ее из функции.
+        if (!exclude.some(exPoint => rndPoint.x === exPoint.x && rndPoint.y === exPoint.y)) {
+          if (count === 1) {
+            return rndPoint;
+          }
+          arrPoints.push(rndPoint);
+          excludePoints.push(rndPoint);
+          break;
+          //return rndPoint;
+        }
       }
     }
+    return arrPoints;
   },
 
   /**
@@ -671,6 +731,40 @@ const game = {
     } else {
       return nextHeadPoint;
     }
+  },
+
+  /**
+   * Возвращает все точки клеток, где не может располагаться стена.
+   * @returns {{x: int, y: int}[]} Массив точек, где стена располагаться не может.
+   */
+  getDisabledWallCells() {
+    let disabledPoints = [];
+    // Получаем точку головы змейки, от нее должно быть минимум 2 пустые клетки до новой точки стенки.
+    const headSnakePoint = this.snake.body[0];
+
+    // Собираем массив точек близ головы змейки, где не может находиться стена.
+    for (let x = headSnakePoint.x - 2; x <= headSnakePoint.x + 2; x++) {
+      for (let y = headSnakePoint.y - 2; y <= headSnakePoint.y + 2; y++) {
+        if(x === headSnakePoint.x && y === headSnakePoint.y) continue;
+        let point = {x: null, y: null};
+        if (x < 0) {
+          point.x = x + this.settings.colsCount;
+        } else if (x >= this.settings.colsCount) {
+          point.x = this.settings.colsCount - x;
+        } else {
+          point.x = x;
+        }
+        if (y < 0) {
+          point.y = y + this.settings.rowsCount;
+        } else if (y >= this.settings.rowsCount) {
+          point.y = this.settings.rowsCount - y;
+        } else {
+          point.y = y;
+        }
+        disabledPoints.push(point);
+      }
+    }
+    return disabledPoints;
   },
 };
 
