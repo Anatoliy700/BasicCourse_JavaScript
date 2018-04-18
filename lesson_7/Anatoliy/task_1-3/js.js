@@ -296,28 +296,42 @@ const settings = {
 //TODO task_1: Новый объект счетчика игры.
 /**
  * Объект счетчика игры пользователя.
- * @property {string}
+ * @property {settings} settings Настройки игры.
+ * @property {HTMLElement} scoreCountEl Элемент, в который выводим счет.
+ * @property {int} count Число счетчика игры.
  */
 const score = {
   settings,
-
   scoreCountEl: null,
   count: 0,
+  /**
+   * Инициализируем счетчик.
+   */
   init() {
     // Object.assign(this.settings, settings);
     this.scoreCountEl = document.getElementById(this.settings.idScoreCountEl);
     this.drop();
   },
 
+  /**
+   * Увеличиваем счетчик.
+   */
   increment() {
     this.renderScore(++this.count);
   },
 
+  /**
+   * Сбрасываем счетчик.
+   */
   drop() {
     // this.count = 0;
     this.renderScore(this.count = 0);
   },
 
+  /**
+   * Выводим счетчик на страницу.
+   * @param {int} count Число счетчика.
+   */
   renderScore(count) {
     this.scoreCountEl.textContent = count;
   },
