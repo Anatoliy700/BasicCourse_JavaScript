@@ -6,11 +6,19 @@
  * @property {{x: int, y: int}[]} body Массив с точками тела змейки.
  * @property {string} lastStepDirection Направление, куда сходила змейка прошлый раз.
  * @property {string} direction Направление, куда пользователь направил змейку.
+ * @property {{x: int, y: int}} nextPoint Объект с координатами следующей точки для перемещения.
  */
 const snake = {
   body: null,
   lastStepDirection: null,
   direction: null,
+
+  //TODO task_2: Добавлен объект с координатами следующей точки для перемещения.
+  nextPoint: {
+    x: null,
+    y: null,
+  },
+
 
   /**
    * Инициализирует змейку, откуда она будет начинать и ее направление.
@@ -40,7 +48,10 @@ const snake = {
     // Записываем направление движения, которое сейчас произойдет как направление прошлого шага.
     this.lastStepDirection = this.direction;
     // Вставляем следующую точку в начало массива.
-    this.body.unshift(this.getNextStepHeadPoint());
+    // this.body.unshift(this.getNextStepHeadPoint());
+
+    //TODO task_2: Модернизация вызова метода(вместо вызова функции отдаем сразу координаты).
+    this.body.unshift(this.nextPoint);
     // Удаляем последний лишний элемент.
     this.body.pop();
   },
@@ -249,6 +260,8 @@ const settings = {
   colsCount: 21,
   speed: 2,
   winLength: 50,
+
+  //TODO task_1: Добавлено новое свойство(Определяет ID HTML элемента счетсика)
   idScoreCountEl: 'score-count',
 
   /**
@@ -280,7 +293,7 @@ const settings = {
   },
 };
 
-//TODO 1: Новый объект счетчика игры.
+//TODO task_1: Новый объект счетчика игры.
 /**
  * Объект счетчика игры пользователя.
  * @property {string}
@@ -328,7 +341,7 @@ const game = {
   food,
   status,
 
-  //TODO 1: Добавлено свойство ссылающееся на объект счетчика.
+  //TODO task_1: Добавлено свойство ссылающееся на объект счетчика.
   score,
   tickInterval: null,
 
@@ -344,7 +357,7 @@ const game = {
       return;
     }
 
-    //TODO 1: Добавлен вызов метода объекта счетчик(Инициализируем счетчик score).
+    //TODO task_1: Добавлен вызов метода объекта счетчик(Инициализируем счетчик score).
     // Инициализируем счетчик score.
     this.score.init();
     // Инициализируем карту.
@@ -414,10 +427,17 @@ const game = {
       return this.finish();
     }
 
-    // Если следующий шаг будет на еду, то заходим в if.
-    if (this.food.isFoodPoint(this.snake.getNextStepHeadPoint())) {
+    //TODO task_2: Вызов нового метода(Получаем координаты следующей позиции головы змейки и сохраняем их).
+    // Получаем координаты следующей позиции головы змейки и сохраняем их.
+    this.snake.nextPoint = this.isNextStepAfterField();
 
-      //TODO 1: Добавлен вызов метода объекта счетчик(Прибавляем к змейке ячейку).
+    // Если следующий шаг будет на еду, то заходим в if.
+    // if (this.food.isFoodPoint(this.snake.getNextStepHeadPoint())) {
+
+    //TODO task_2: Модернизация проверки(вместо вызова функции сразу отдаем координаты).
+    if (this.food.isFoodPoint(this.snake.nextPoint)) {
+
+      //TODO task_1: Добавлен вызов метода объекта счетчик(Прибавляем к змейке ячейку).
       // Прибавляем к змейке ячейку.
       this.snake.incrementBody();
       // Увеличиваем счетчик игры.
@@ -521,7 +541,7 @@ const game = {
     // Ставим игру в начальное положение.
     this.reset();
 
-    //TODO 1: Добавлен вызов метода(Сбрасываем счетчик игры).
+    //TODO task_1: Добавлен вызов метода(Сбрасываем счетчик игры).
     // Сбрасываем счетчик игры.
     this.score.drop();
   },
@@ -589,6 +609,7 @@ const game = {
     return this.snake.body.length > this.settings.winLength;
   },
 
+  //TODO task_2: Подкоректированный метод(удалена проверка на границу поля).
   /**
    * Проверяет возможен ли следующий шаг.
    * @returns {boolean} true если следующий шаг змейки возможен, false если шаг не может быть совершен.
@@ -597,11 +618,45 @@ const game = {
     // Получаем следующую точку головы змейки в соответствии с текущим направлением.
     const nextHeadPoint = this.snake.getNextStepHeadPoint();
     // Змейка может сделать шаг если следующая точка не на теле змейки и точка внутри игрового поля.
-    return !this.snake.isBodyPoint(nextHeadPoint) &&
-      nextHeadPoint.x < this.settings.colsCount &&
-      nextHeadPoint.y < this.settings.rowsCount &&
-      nextHeadPoint.x >= 0 &&
-      nextHeadPoint.y >= 0;
+    return !this.snake.isBodyPoint(nextHeadPoint);
+  },
+
+  // TODO task_2: Добавлен новый метод(Определяет пересекает ли следующий шаг змейки границу поля).
+  /**
+   * Определяет пересекает ли следующий шаг змейки границу поля и если пересекает,
+   * то возвращает подкорректированные координаты.
+   * @return {{x: int, y: int}} Возвращает координаты следующей позиции.
+   */
+  isNextStepAfterField() {
+    // Получаем следующую точку головы змейки в соответствии с текущим направлением.
+    const nextHeadPoint = this.snake.getNextStepHeadPoint();
+    // Если пересекаем границу поля, то корректируем координаты следующей точки.
+    if (nextHeadPoint.x >= this.settings.colsCount ||
+      nextHeadPoint.y >= this.settings.rowsCount ||
+      nextHeadPoint.x < 0 ||
+      nextHeadPoint.y < 0) {
+      let nextStep = {
+        x: null,
+        y: null,
+      };
+      if (nextHeadPoint.x < 0) {
+        nextStep.x = this.settings.colsCount - 1;
+      } else if (nextHeadPoint.x >= this.settings.colsCount) {
+        nextStep.x = 0;
+      } else {
+        nextStep.x = nextHeadPoint.x;
+      }
+      if (nextHeadPoint.y < 0) {
+        nextStep.y = this.settings.rowsCount - 1;
+      } else if (nextHeadPoint.y >= this.settings.rowsCount) {
+        nextStep.y = 0;
+      } else {
+        nextStep.y = nextHeadPoint.y;
+      }
+      return nextStep;
+    } else {
+      return nextHeadPoint;
+    }
   },
 };
 
