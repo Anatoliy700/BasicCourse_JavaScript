@@ -62,7 +62,7 @@ const walls = {
    * @returns {boolean} true если точка содержит стену, иначе false.
    */
   isWallPoint(point) {
-
+    return this.points.some(wallPoint => wallPoint.x === point.x && wallPoint.y === point.y);
   },
 
   /**
@@ -219,10 +219,11 @@ const renderer = {
    * Отображает все объекты на карте.
    * @param {{x: int, y: int}[]} snakePointsArray Массив с точками змейки.
    * @param {{x: int, y: int}} foodPoint Точка еды.
+   * @param {{x: int, y: int}[]} wallPoints Точки стен.
    * @see {@link https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames|Object.getOwnPropertyNames()}
    * @see {@link https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach|Array.prototype.forEach()}
    */
-  render(snakePointsArray, foodPoint) {
+  render(snakePointsArray, foodPoint, wallPoints) {
     // Чистим карту от предыдущего рендера, всем ячейкам оставляем только класс cell.
     for (const key of Object.getOwnPropertyNames(this.cells)) {
       this.cells[key].className = 'cell';
@@ -236,6 +237,11 @@ const renderer = {
 
     // Отображаем еду.
     this.cells[`x${foodPoint.x}_y${foodPoint.y}`].classList.add('food');
+
+    // Отображаем стены
+    wallPoints.forEach((point) => {
+      this.cells[`x${point.x}_y${point.y}`].classList.add('wall');
+    });
 
 
   },
@@ -422,13 +428,11 @@ const game = {
     // Ставим игру в начальное положение.
     this.reset();
 
-    this.walls.init(this.getRandomCoordinates(this.settings.quantityWall, this.getDisabledWallCells()));
-
-/*
-    this.getDisabledWallCells().forEach((p)=>{
-      this.renderer.cells[`x${p.x}_y${p.y}`].style.backgroundColor = 'blue';
-    });
-*/
+    /*
+        this.getDisabledWallCells().forEach((p)=>{
+          this.renderer.cells[`x${p.x}_y${p.y}`].style.backgroundColor = 'blue';
+        });
+    */
 
   },
 
@@ -442,6 +446,10 @@ const game = {
     this.snake.init(this.getStartSnakePoint(), 'up');
     // Ставим еду на карту в случайную пустую ячейку.
     this.food.setFoodCoordinates(this.getRandomCoordinates());
+
+
+    // Инициализируем стены.
+    this.walls.init(this.getRandomCoordinates(this.settings.quantityWall, this.getDisabledWallCells()));
     // Отображаем все что нужно для игры.
     this.render();
   },
@@ -558,10 +566,10 @@ const game = {
   },
 
   /**
-   * Отображает все для игры, карту, еду и змейку.
+   * Отображает все для игры, карту, еду, змейку и стены.
    */
   render() {
-    this.renderer.render(this.snake.body, this.food.getFoodCoordinates());
+    this.renderer.render(this.snake.body, this.food.getFoodCoordinates(), this.walls.points);
   },
 
   /**
@@ -691,8 +699,8 @@ const game = {
   canSnakeMakeStep() {
     // Получаем следующую точку головы змейки в соответствии с текущим направлением.
     const nextHeadPoint = this.snake.getNextStepHeadPoint();
-    // Змейка может сделать шаг если следующая точка не на теле змейки и точка внутри игрового поля.
-    return !this.snake.isBodyPoint(nextHeadPoint);
+    // Змейка может сделать шаг если следующая точка не на теле змейки и эта точка не стена.
+    return !this.snake.isBodyPoint(nextHeadPoint) || this.walls.isWallPoint(nextHeadPoint);
   },
 
   // TODO task_2: Добавлен новый метод(Определяет пересекает ли следующий шаг змейки границу поля).
@@ -745,7 +753,7 @@ const game = {
     // Собираем массив точек близ головы змейки, где не может находиться стена.
     for (let x = headSnakePoint.x - 2; x <= headSnakePoint.x + 2; x++) {
       for (let y = headSnakePoint.y - 2; y <= headSnakePoint.y + 2; y++) {
-        if(x === headSnakePoint.x && y === headSnakePoint.y) continue;
+        if (x === headSnakePoint.x && y === headSnakePoint.y) continue;
         let point = {x: null, y: null};
         if (x < 0) {
           point.x = x + this.settings.colsCount;
