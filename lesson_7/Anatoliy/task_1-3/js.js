@@ -6,7 +6,7 @@ const settings = {
   speed: 2,
   winLength: 50,
 
-  //TODO task_1: Добавлено новое свойство(Определяет ID HTML элемента счетсика).
+  //TODO task_1: Добавлено новое свойство(Определяет ID HTML элемента счетчика).
   idScoreCountEl: 'score-count',
 
 // TODO task_3 Добавлено свойство(определяет количество стен).
@@ -73,7 +73,6 @@ const walls = {
   changeRandomWallPosition(point) {
     // Удаляем случайный элемент с координатой стены и заменяем новым
     this.points.splice(Math.floor(Math.random() * this.points.length), 1, point);
-    // Ставим стенке новую точку на карте.
   },
 };
 
@@ -109,7 +108,7 @@ const snake = {
     return this.body.some(snakePoint => snakePoint.x === point.x && snakePoint.y === point.y);
   },
 
-  // TODO task_2: Модекрнизированный метод(Принимает количество строк и столбцов поля).
+  // TODO task_2: Модернизированный метод(Теперь принимает количество строк и столбцов поля).
   /**
    * Двигает змейку на один шаг.
    * @param {int} colsCount Количество столбцов.
@@ -511,7 +510,8 @@ const game = {
     //TODO task_3: Ставим таймаут на запуск функции генерации случайной стены.
     // Ставим таймаут геренации случайной стены
     this.wallTimeout = window.setTimeout(
-      () => this.changeWallPosition(), (Math.floor(Math.random() * 15 - 5) + 5) * 1000);
+      () => this.changeWallPosition(), (Math.floor(Math.random() * (15 - 5) + 5) * 1000)
+    );
 
 
     // Меняем название кнопки в меню на "Стоп" и делаем ее активной.
@@ -639,7 +639,7 @@ const game = {
    */
   getRandomCoordinates(count = 1, exclude = []) {
     // Занятые точки на карте и точки исключения если переданы.
-    const excludePoints = [this.food.getFoodCoordinates(), ...this.snake.body, ...exclude];
+    const excludePoints = [this.food.getFoodCoordinates(), ...this.snake.body, ...this.walls.points, ...exclude];
     // Массив для точек если нужно вернуть несколько.
     let arrPoints = [];
     // Цикл на количество запрашиваемых точек.
